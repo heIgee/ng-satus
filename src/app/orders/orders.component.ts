@@ -8,8 +8,10 @@ import {
 } from 'devextreme-angular';
 import { DxoHeaderFilterComponent } from 'devextreme-angular/ui/nested';
 import { OptionChangedEvent } from 'devextreme/ui/data_grid';
-import { Order, OrdersService } from './orders.service';
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { FormattedFilterType } from '../enums/formatted-filter-type.enum';
+import { formatFilterValue } from '../utils/format-filter-value.util';
+import { Order, OrdersService } from './orders.service';
 import { Filter } from '../types/filter.type';
 
 @Component({
@@ -86,8 +88,6 @@ export class OrdersComponent implements OnInit {
   }
 
   onOptionChanged(ev: OptionChangedEvent) {
-    if (!ev.fullName.includes('filterValue')) return;
-
     const match = ev.fullName.match(/columns\[(\d+)\]/);
 
     if (!match || !match[1]) {
@@ -96,20 +96,34 @@ export class OrdersComponent implements OnInit {
 
     const columnIndex = parseInt(match[1], 10);
     const column = ev.component.columnOption(columnIndex);
+    const field = column.caption;
 
-    const field = column.dataField;
-    const operation = column.selectedFilterOperation || '';
-    const value = ev.value + operation;
-    this.updateFilterChips(field, value);
+    if (ev.fullName.includes('filterValue')) {
+      const operation = column.selectedFilterOperation || '';
+      const value = ev.value;
+      this.updateFilterChips(field, operation, value);
+    } else if (ev.fullName.includes('selectedFilterOperation')) {
+      const operation = ev.value;
+      const value = column.filterValue;
+      this.updateFilterChips(field, operation, value);
+    }
   }
 
-  updateFilterChips(field: string, value: string | null) {
+  updateFilterChips(field: string, operation: string, value: string | null) {
     if (value) {
+      const formattedValue = formatFilterValue(value);
+      const keyOperation = operation as keyof typeof FormattedFilterType;
+
       const existingFilter = this.filters.find((f) => f.field === field);
       if (existingFilter) {
-        existingFilter.value = value;
+        existingFilter.operation = keyOperation;
+        existingFilter.value = formattedValue;
       } else {
-        this.filters.push({ field, value });
+        this.filters.push({
+          field,
+          operation: keyOperation,
+          value: formattedValue,
+        });
       }
     } else {
       this.filters = this.filters.filter((f) => f.field !== field);

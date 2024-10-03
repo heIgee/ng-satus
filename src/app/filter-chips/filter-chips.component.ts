@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatChipsModule } from '@angular/material/chips';
+import { FormattedFilterType } from '../enums/formatted-filter-type.enum';
 import { Filter } from '../types/filter.type';
 
 @Component({
@@ -11,7 +12,9 @@ import { Filter } from '../types/filter.type';
     <mat-chip-set>
       @for (filter of filters; track filter.field) {
       <mat-chip removable (removed)="onRemoveFilter(filter.field)">
-        {{ filter.field }}: {{ filter.value }}
+        {{ filter.field }}
+        {{ formattedFilterType[filter.operation] || filter.operation }}
+        {{ filter.value }}
         <mat-icon matChipRemove>❌</mat-icon>
       </mat-chip>
       }
@@ -22,6 +25,8 @@ import { Filter } from '../types/filter.type';
 export class FilterChipsComponent {
   @Input() filters: Filter[] = [];
   @Output() removeFilter = new EventEmitter<string>();
+
+  formattedFilterType = FormattedFilterType;
 
   onRemoveFilter(field: string) {
     this.removeFilter.emit(field);
