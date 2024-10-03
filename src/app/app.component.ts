@@ -1,43 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { SelectToppingsComponent } from './select-toppings/select-toppings.component';
-import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-dialog.component';
-import { ToppingsService } from './services/toppings.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatButtonModule, SelectToppingsComponent],
+  imports: [
+    RouterOutlet,
+    MatButtonModule,
+    RouterLink,
+    RouterLinkActive,
+    SelectToppingsComponent,
+  ],
   template: `
     <h1>{{ title }}</h1>
-    <select-toppings />
-    <br />
-    <button mat-flat-button (click)="openDialog()">Order</button>
+    <section>
+      <router-outlet />
+    </section>
+    <nav>
+      <a
+        mat-button
+        routerLink="/"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Home
+      </a>
+      <a
+        mat-button
+        routerLink="/toppings"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Toppings
+      </a>
+      <a
+        mat-button
+        routerLink="/orders"
+        routerLinkActive="active"
+        ariaCurrentWhenActive="page"
+      >
+        Orders
+      </a>
+    </nav>
+  `,
+  styles: `
+    section {
+      max-height: 80vh;
+      max-width: 80vw;
+    }
+    nav {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+    }
   `,
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'ng-satus';
-
-  constructor(
-    private readonly dialog: MatDialog,
-    private readonly toppingsService: ToppingsService,
-  ) {}
-
-  ngOnInit(): void {
-    this.toppingsService.loadToppings();
-  }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent);
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result !== undefined) {
-        console.log('Your order:', result);
-      } else {
-        console.log('Order was cancelled');
-      }
-    });
-  }
 }

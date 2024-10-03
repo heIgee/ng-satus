@@ -2,11 +2,11 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { Subscription } from 'rxjs';
-import { ToppingsService } from '../services/toppings.service';
+import { ToppingsService } from '../toppings/toppings.service';
 
 @Component({
   standalone: true,
-  selector: 'select-toppings',
+  selector: 'app-select-toppings',
   imports: [MatSelectModule, ReactiveFormsModule],
   template: `
     <mat-form-field>

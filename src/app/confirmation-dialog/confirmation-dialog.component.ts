@@ -3,10 +3,10 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { SelectToppingsComponent } from '../select-toppings/select-toppings.component';
-import { ToppingsService } from '../services/toppings.service';
+import { ToppingsService } from '../toppings/toppings.service';
 
 @Component({
-  selector: 'confirmation-dialog',
+  selector: 'app-confirmation-dialog',
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -17,7 +17,7 @@ import { ToppingsService } from '../services/toppings.service';
   template: `
     <h2 mat-dialog-title>Confirm Toppings</h2>
     <mat-dialog-content>
-      <select-toppings />
+      <app-select-toppings />
     </mat-dialog-content>
     <mat-dialog-actions>
       <button mat-button (click)="onNoClick()">Cancel</button>
