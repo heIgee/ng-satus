@@ -45,10 +45,29 @@
       [dataSource]="saleAmountHeaderFilter"
     ></dxo-header-filter>
   </dxi-column>
-  <dxi-column dataField="Employee"></dxi-column>
+  <dxi-column dataField="Employee">
+    <dxo-header-filter [dataSource]="employeeHeaderFilter"></dxo-header-filter>
+  </dxi-column>
   <dxi-column dataField="CustomerStoreCity" caption="City">
     <dxo-header-filter>
       <dxo-search [enabled]="true"></dxo-search>
     </dxo-header-filter>
   </dxi-column>
+  <dxo-summary [calculateCustomSummary]="calculateSummary">
+    <dxi-total-item
+      name="OrderNumberSummary"
+      showInColumn="OrderNumber"
+      summaryType="custom"
+      displayFormat="Max: {0}"
+    >
+    </dxi-total-item>
+    <dxi-total-item
+      name="SaleAmountSummary"
+      showInColumn="SaleAmount"
+      summaryType="custom"
+      valueFormat="currency"
+      displayFormat="Avg: {0}"
+    >
+    </dxi-total-item>
+  </dxo-summary>
 </dx-data-grid>

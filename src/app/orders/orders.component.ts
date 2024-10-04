@@ -165,4 +165,48 @@ export class OrdersComponent implements OnInit {
       return results;
     };
   };
+
+  employeeHeaderFilter = ({ dataSource }: any) => {
+    const employeeNames = ['Noah', 'George', 'Oliver', 'Arthur'];
+    dataSource.postProcess = (results: unknown[]) => {
+      results.push(...employeeNames.map((n) => ({ text: n, value: n })));
+      return results;
+    };
+  };
+
+  calculateSummary(options: any) {
+    switch (options.name) {
+      case 'SaleAmountSummary': {
+        if (options.summaryProcess === 'start') {
+          options.totalValue = { sum: 0, count: 0 };
+        }
+        if (options.summaryProcess === 'calculate') {
+          options.totalValue.sum += options.value.SaleAmount;
+          options.totalValue.count++;
+        }
+        if (options.summaryProcess === 'finalize') {
+          const { sum, count } = options.totalValue;
+          options.totalValue = count > 0 ? sum / count : 0;
+        }
+        break;
+      }
+      case 'OrderNumberSummary': {
+        if (options.summaryProcess === 'start') {
+          options.totalValue = Number.NEGATIVE_INFINITY;
+        }
+        if (options.summaryProcess === 'calculate') {
+          options.totalValue = Math.max(
+            options.value.OrderNumber,
+            options.totalValue,
+          );
+        }
+        if (options.summaryProcess === 'finalize') {
+          if (options.totalValue === Number.NEGATIVE_INFINITY) {
+            options.totalValue = 0;
+          }
+        }
+        break;
+      }
+    }
+  }
 }
